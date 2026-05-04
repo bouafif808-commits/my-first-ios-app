@@ -246,16 +246,11 @@ function buildChartBars(days: any[], range: Range, goal: number) {
         ? ["13", "14", "15", "16", "17", "18", "19"]
         : ["1", "2", "3", "4", "5", "6", "7"];
 
-    const sampleValues = [1450, 2100, 1620, 1950, 1430, 1240, 1650];
-
-    return labels.map((label, index) => {
-      const value = sampleValues[index];
-      return {
-        label,
-        height: Math.min((value / CHART_MAX) * 100, 100),
-        color: value > goal ? colors.red : value > goal * 0.8 ? colors.orange : colors.green,
-      };
-    });
+    return labels.map((label) => ({
+      label,
+      height: 3,
+      color: "#222",
+    }));
   }
 
   const sorted = [...days]
