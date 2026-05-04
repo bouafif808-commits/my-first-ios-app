@@ -1,0 +1,47 @@
+workflows:
+  expo-ios-unsigned:
+    name: Expo iOS Unsigned IPA
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+
+    environment:
+      node: latest
+      xcode: latest
+      cocoapods: default
+
+    scripts:
+      - name: Install dependencies
+        script: |
+          npm install
+
+      - name: Prebuild iOS project
+        script: |
+          npx expo prebuild --platform ios --clean
+
+      - name: Install pods
+        script: |
+          cd ios
+          pod install
+
+      - name: Build unsigned iOS archive
+        script: |
+          xcodebuild \
+            -workspace ios/*.xcworkspace \
+            -scheme MissionDay \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath build/MissionDay.xcarchive \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            archive
+
+      - name: Create unsigned IPA
+        script: |
+          mkdir -p build/ipa/Payload
+          cp -R build/MissionDay.xcarchive/Products/Applications/*.app build/ipa/Payload/
+          cd build/ipa
+          zip -r MissionDay-unsigned.ipa Payload
+
+    artifacts:
+      - build/ipa/*.ipa
