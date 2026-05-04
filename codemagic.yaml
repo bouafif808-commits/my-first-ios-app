@@ -5,6 +5,8 @@ workflows:
     instance_type: mac_mini_m2
 
     environment:
+      groups:
+        - app
       node: latest
       xcode: latest
       cocoapods: default
@@ -13,6 +15,11 @@ workflows:
       - name: Install dependencies
         script: |
           npm install
+
+      - name: Create Expo env file
+        script: |
+          echo "EXPO_PUBLIC_OPENAI_API_KEY=$EXPO_PUBLIC_OPENAI_API_KEY" > .env
+          echo "Env file created"
 
       - name: Prebuild iOS project
         script: |
